@@ -1,0 +1,14 @@
+<resources>
+
+    <style name="actionbar">
+        <item name="android:background">@color/colorWhite</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">45dp</item>
+    </style>
+
+    <style name="actionbar1">
+        <item name="android:background">@color/colorBlue</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">45dp</item>
+    </style>
+</resources>
