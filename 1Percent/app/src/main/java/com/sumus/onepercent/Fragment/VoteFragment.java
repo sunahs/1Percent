@@ -381,6 +381,9 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
                 if(pref.getPreferences("user","userID").equals("")) {
                     Toast.makeText(mActivity, "로그인 시 이용가능합니다.", Toast.LENGTH_SHORT).show();
                 }
+                else if("2017.01.01".equals(vote_dateTv.getText().toString())){
+                    Log.d("SUN", "2017.01.01 이전 X");
+                }
                 else {
                     vote_calender_preBtn.startAnimation(click_animation);
                     String dates = vote_dateTv.getText().toString();
@@ -393,6 +396,9 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
             case R.id.vote_calender_nextBtn:
                 if(pref.getPreferences("user","userID").equals("")) {
                     Toast.makeText(mActivity, "로그인 시 이용가능합니다.", Toast.LENGTH_SHORT).show();
+                }
+                else if(today_YYYYMMDD.equals(vote_dateTv.getText().toString().replace(".",""))){
+                    Log.d("SUN", "오늘 다음날 X");
                 }
                 else {
                     vote_calender_nextBtn.startAnimation(click_animation);

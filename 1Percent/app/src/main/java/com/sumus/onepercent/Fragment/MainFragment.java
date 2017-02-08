@@ -209,6 +209,9 @@ public class MainFragment extends Fragment implements View.OnClickListener{
         long base_time=0, now_time, gap_time;
         try {
             now_time = System.currentTimeMillis(); // 현재시간
+            if(    (df.parse(today_YYYYMMDD+" 00:00:00")).getTime() <= now_time && now_time  < (df.parse(today_YYYYMMDD+" 00:00:01")).getTime()  ){
+                ((MainActivity)MainActivity.mContext).reActivity();
+            }
              if( now_time  < (df.parse(today_YYYYMMDD+" 11:00:00")).getTime()  ){
                 base_time = (df.parse(today_YYYYMMDD+" 11:00:00")).getTime();
                  main_timerTv.setText("투표 대기 중");

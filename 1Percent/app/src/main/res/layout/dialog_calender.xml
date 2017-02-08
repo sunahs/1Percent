@@ -25,7 +25,7 @@
         android:layout_below="@id/appbar"
         android:focusedMonthDateColor="@color/colorBlue"
         android:maxDate="12/31/2017"
-        android:minDate="11/01/2016"
+        android:minDate="01/01/2017"
         android:showWeekNumber="false"
         android:unfocusedMonthDateColor="@color/colorWhite" />
 
