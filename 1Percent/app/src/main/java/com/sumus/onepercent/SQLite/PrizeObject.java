@@ -8,31 +8,45 @@ import java.util.Arrays;
 
 public class PrizeObject {
     /* 당첨결과 객체 */
-    String dataArray[] = new String[4];
+    String prize_date="";
+    String prize_people="";
+    String prize_gift="";
+    String prize_img="";
 
-    String prize_date;
-    String prize_peopLe;
-    String prize_gift;
-    String prize_img;
-
-    public PrizeObject(String prize_date, String prize_peopLe, String prize_gift, String prize_img) {
-        this.prize_date = dataArray[0] =prize_date;
-        this.prize_peopLe  = dataArray[1] = prize_peopLe;
-        this.prize_gift  = dataArray[2] = prize_gift;
-        this.prize_img  = dataArray[3] = prize_img;
+    public PrizeObject(String prize_date, String prize_people, String prize_gift, String prize_img) {
+        this.prize_date  =prize_date;
+        this.prize_people  = prize_people;
+        this.prize_gift = prize_gift;
+        this.prize_img = prize_img;
     }
 
-    public String[] getArray(){
-        return dataArray;
+    public PrizeObject( String prize_gift, String prize_img) {
+        this.prize_gift = prize_gift;
+        this.prize_img  =prize_img;
+    }
+
+    public String getPrize_date() {
+        return prize_date;
+    }
+
+    public String getPrize_people() {
+        return prize_people;
+    }
+
+    public String getPrize_gift() {
+        return prize_gift;
+    }
+
+    public String getPrize_img() {
+        return prize_img;
     }
 
 
     @Override
     public String toString() {
         return "PrizeObject{" +
-                "dataArray=" + Arrays.toString(dataArray) +
-                ", prize_date='" + prize_date + '\'' +
-                ", prize_peopLe='" + prize_peopLe + '\'' +
+                " prize_date='" + prize_date + '\'' +
+                ", prize_peopLe='" + prize_people + '\'' +
                 ", prize_gift='" + prize_gift + '\'' +
                 ", prize_img='" + prize_img + '\'' +
                 '}';

@@ -1,5 +1,6 @@
 package com.sumus.onepercent.SQLite;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,7 +23,6 @@ public class DBManager {
     private static final String voteTable = "VoteTable";
     private static final String prizeTable = "PrizeTable";
     private static final String myTable = "MyTable";
-    private static final String mainTable = "MainTable";
     public static final int dbVersion = 1;
 
     // DB관련 객체 선언
@@ -56,12 +56,10 @@ public class DBManager {
                                 "vote_total text, vote_prize_total text, request_state text, todayresult_state text, primary key(vote_date));";
             String createSql2 = "create table " + prizeTable + " (prize_date text not null,prize_people text, prize_gift text, prize_img text , primary key(prize_date));";
             String createSql3 = "create table " + myTable + " (my_date text not null, my_select_number text, my_select_value text, primary key(my_date));";
-            String createSql4 = "create table " + mainTable + "(main_date, main_question, main_ex1, main_ex2, main_ex3, main_ex4, gift_name, gift_png, primary key(main_date));";
 
             arg0.execSQL(createSql1);
             arg0.execSQL(createSql2);
             arg0.execSQL(createSql3);
-            arg0.execSQL(createSql4);
 
         }
 
@@ -74,13 +72,47 @@ public class DBManager {
     /**************************************** vote Table **********************************************/
     public void insertVote(VoteObject info)  // 삽입
     {
-        String sql = "insert into " + voteTable + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+        ContentValues values = new ContentValues();
+        values.put("vote_date", info.getVote_date());
+        values.put("vote_question", info.getVote_question());
+        values.put("vote_ex1", info.getVote_ex(1));
+        values.put("vote_ex2", info.getVote_ex(2));
+        values.put("vote_ex3", info.getVote_ex(3));
+        values.put("vote_ex4", info.getVote_ex(4));
+        values.put("vote_count1", info.getVote_count(1));
+        values.put("vote_count2", info.getVote_count(2));
+        values.put("vote_count3", info.getVote_count(3));
+        values.put("vote_count4", info.getVote_count(4));
+        values.put("vote_total", info.getVote_total());
+        values.put("vote_prize_total", info.getVote_prize_total());
+        values.put("request_state", info.getRequest_state());
+        values.put("todayresult_state", info.getTodayresult_state());
         try{
-            db.execSQL(sql,info.getArray());
-            Log.d("SUN","insertVote : "+info.toString());
+            db.insert(voteTable, null, values);
+            Log.d("SUN","insertVote : "+values.toString());
         }catch(Exception e) {
         }
     }
+
+    public void insertVote(String date, VoteObject info)  // 업데이트
+    {
+        ContentValues values = new ContentValues();
+        values.put("vote_count1",info.getVote_count(1));
+        values.put("vote_count2",info.getVote_count(2));
+        values.put("vote_count3",info.getVote_count(3));
+        values.put("vote_count4",info.getVote_count(4));
+        values.put("vote_total",info.getVote_total());
+        values.put("vote_prize_total",info.getVote_prize_total());
+        values.put("request_state",info.getRequest_state());
+        values.put("todayresult_state",info.getTodayresult_state());
+        try{
+            db.update(voteTable,values,"vote_date=?",new String[]{String.valueOf(date)});
+            db.close();
+            Log.d("SUN","insertVote date : "+values.toString());
+        }catch(Exception e) {
+        }
+    }
+
 
     public VoteObject selectVote(String vote_date) // 조회
     {
@@ -102,10 +134,28 @@ public class DBManager {
 
     public void insertPrize(PrizeObject info)  // 삽입
     {
-        String sql = "insert into " + prizeTable + " values(?,?,?,?);";
+        ContentValues values = new ContentValues();
+        values.put("prize_date",info.getPrize_date());
+        values.put("prize_people",info.getPrize_people());
+        values.put("prize_gift",info.getPrize_gift());
+        values.put("prize_img",info.getPrize_img());
+
         try{
-            db.execSQL(sql,info.getArray());
-            Log.d("SUN","insertPrize : "+info.toString());
+            db.insert(prizeTable, null, values);
+            db.close();
+            Log.d("SUN","insertPrize : "+values.toString());
+        }catch(Exception e) {
+        }
+    }
+
+    public void insertPrize(String date, PrizeObject info)  // 업데이트
+    {
+        ContentValues values = new ContentValues();
+        values.put("prize_people",info.getPrize_people());
+        try{
+            db.update(prizeTable,values,"vote_date=?",new String[]{String.valueOf(date)});
+            db.close();
+            Log.d("SUN","insertPrize : "+values.toString());
         }catch(Exception e) {
         }
     }
@@ -152,40 +202,6 @@ public class DBManager {
             results.close();
             return info;
 
-    }
-
-    /**************************************** main Table **********************************************/
-    public void insertMain(MainObject info)  // 삽입
-    {
-        String sql = "insert into " + mainTable + " values(?,?,?,?,?,?,?,?);";
-        try{
-            db.execSQL(sql,info.getArray());
-            Log.d("SUN","insertMain : "+info.toString());
-        }catch(Exception e) {
-            Log.d("SUN","insertMain error : " + e.getMessage());
-        }
-    }
-
-    public MainObject selectMain(String main_date) // 조회
-    {
-        String sql = "select * from " + mainTable + " where main_date like '%"+main_date+"%';";
-        try {
-            Cursor results = db.rawQuery(sql, null);
-
-            results.moveToFirst();
-            MainObject info = null;
-            while (!results.isAfterLast()) {
-                info = new MainObject(results.getString(0), results.getString(1), results.getString(2), results.getString(3), results.getString(4), results.getString(5), results.getString(6), results.getString(7));
-                Log.d("SUN", "selectMain : " + info.toString());
-                results.moveToNext();
-            }
-            results.close();
-            return info;
-        }
-        catch (Exception e){
-
-        }
-        return null;
     }
 
 }

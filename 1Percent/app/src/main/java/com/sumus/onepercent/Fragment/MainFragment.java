@@ -136,23 +136,22 @@ public class MainFragment extends Fragment implements View.OnClickListener{
         main_infoBtn.setOnClickListener(this);
 
         main_giftImg = (ImageView)views.findViewById(R.id.main_giftImg);
-        IniteData();
+        InitData();
     }
 
-    void IniteData(){
-        MainObject mainObject;
-        if((mainObject = manager.selectMain("20161102"))==null)
+    void InitData(){
+        VoteObject voteObject;
+        if((voteObject = manager.selectVote(today_YYYYMMDD))==null)
         {
             Log.d("SUN", "MainFragmet # db null");
-            getMain_Server();
+           // getMain_Server();
         }
         else
         {
             try {
                 Log.d("SUN","MainFragment # db not null~!!!");
-//                MainObject mainObject =  manager.selectMain("20161102");
-                main_giftnameTv.setText(mainObject.getGift_name());
-                main_giftImg.setImageBitmap(byteArrayToBitmap(Base64.decode(pref.getPreferences("oneday","giftImg"), Base64.DEFAULT)));
+//                main_giftnameTv.setText(voteObject.getGift_name());
+//                main_giftImg.setImageBitmap(byteArrayToBitmap(Base64.decode(pref.getPreferences("oneday","giftImg"), Base64.DEFAULT)));
             }
             catch (NullPointerException e){
                 Log.d("SUN", "MainFragmet # DB is null");
@@ -205,6 +204,7 @@ public class MainFragment extends Fragment implements View.OnClickListener{
     }
 
     public void ClockSet(){
+
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
         long base_time=0, now_time, gap_time;
         try {
@@ -249,61 +249,11 @@ public class MainFragment extends Fragment implements View.OnClickListener{
 
             String resultTime = String.format("%02d", hourGap) + ":" +  String.format("%02d", minGap) + ":" +  String.format("%02d", secGap);
             main_clockTv.setText(resultTime);
+//            Log.d("SUN","Thread : "+ resultTime);
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
-    }
-
-    void getMain_Server() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        Log.d("SUN", "MainFragment # getMain_Server()");
-        client.get("http://onepercentserver.azurewebsites.net/OnePercentServer/main.do", new AsyncHttpResponseHandler() {
-            @Override
-            public void onStart() {    }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                Log.d("SUN", "statusCode : " + statusCode + " , response : " + new String(response));
-                String res = new String(response);
-                try {
-                    JSONObject object = new JSONObject(res);
-                    String objStr = object.get("main_result") + "";
-                    JSONArray arr = new JSONArray(objStr);
-                    for (int i = 0; i < arr.length(); i++) {
-
-                        MySharedPreference pref = new MySharedPreference(mContext);
-
-                        JSONObject obj = (JSONObject) arr.get(i);
-
-                        String gift = (String) obj.get("gift_name");
-                        String question = (String) obj.get("question");
-                        String today = (String) obj.get("today");
-                        String giftPng = (String)obj.get("gift_png");
-
-                        main_giftnameTv.setText(gift);
-
-                        getImage_Server(giftPng); // 이미지
-                        String ex[] = new String[4];
-                        JSONArray exArr = (JSONArray) obj.get("example");
-                        for (int z = 1; z <= 4; z++) {
-                            JSONObject exObj = (JSONObject) exArr.get(0);
-                            ex[z-1] = (String) exObj.get(z + "");
-                        }
-                        manager.insertMain(new MainObject(today,question,ex[0],ex[1],ex[2],ex[3],gift,giftPng));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Log.d("SUN", "e : " + e.toString());
-                }
-            }
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.d("SUN", "MainFragment # getMain_Server # onFailure // statusCode : " + statusCode +  " , error : " + error.toString());
-            }
-            @Override
-            public void onRetry(int retryNo) {  }
-        });
     }
 
     public Bitmap byteArrayToBitmap(byte[] byteArray ) {  // byte -> bitmap 변환 및 반환
@@ -378,7 +328,7 @@ public class MainFragment extends Fragment implements View.OnClickListener{
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Log.d("SUN", "e : " + e.toString());
+                    Log.d("SUN", "MainFragment # getAllVoteResult e : " + e.toString());
                 }
             }
             @Override
@@ -402,7 +352,7 @@ public class MainFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onStop() {
         super.onStop();
-        RunFlag = false;
+//        RunFlag = false;
     }
 
     @Override
@@ -411,4 +361,42 @@ public class MainFragment extends Fragment implements View.OnClickListener{
         RunFlag = false;
     }
 
+
+    //    void getMain_Server() {
+//        AsyncHttpClient client = new AsyncHttpClient();
+//        Log.d("SUN", "MainFragment # getMain_Server()");
+//        client.get("http://onepercentserver.azurewebsites.net/OnePercentServer/todayQuestion.do", new AsyncHttpResponseHandler() {
+//            @Override
+//            public void onStart() {    }
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+//                Log.d("SUN", "statusCode : " + statusCode + " , response : " + new String(response));
+//                String res = new String(response);
+//                try {
+//                    JSONObject object = new JSONObject(res);
+//                    String objStr = object.get("todayQuestion") + "";
+//                    JSONArray arr = new JSONArray(objStr);
+//                    for (int i = 0; i < arr.length(); i++) {
+//                        JSONObject obj = (JSONObject) arr.get(i);
+//                        String question = (String) obj.get("vote_question");
+//                        String ex[] = new String[4];
+//                        for (int z = 0; z < 4; z++) {
+//                            ex[z] = (String) obj.get("ex"+(z+1)+"_value");
+//                        }
+//                        manager.insertVote(new VoteObject(today_YYYYMMDD,question,ex[0],ex[1],ex[2],ex[3]));
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                    Log.d("SUN", "e : " + e.toString());
+//                }
+//            }
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+//                Log.d("SUN", "MainFragment # getMain_Server # onFailure // statusCode : " + statusCode +  " , error : " + error.toString());
+//            }
+//            @Override
+//            public void onRetry(int retryNo) {  }
+//        });
+//    }
 }

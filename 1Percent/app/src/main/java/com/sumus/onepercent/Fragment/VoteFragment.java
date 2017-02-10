@@ -186,12 +186,12 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
         vote_totalTv = (TextView)views.findViewById(R.id.vote_totalTv);
 
 
-        IniteData();
+        InitData();
     }
 
-    void IniteData(){
-        MainObject mainObject;
-        if((mainObject=manager.selectMain("20161102"))==null)
+    void InitData(){
+        VoteObject voteObject;
+        if((voteObject=manager.selectVote(today_YYYYMMDD))==null)
         {
             Log.d("SUN", "VoteFragmet # db null");
             getMain_Server();
@@ -200,11 +200,11 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
         {
             try {
                 Log.d("SUN","VoteFragment # selectMain");
-                vote_questionTv.setText(mainObject.getMain_question());
-                vote_radioButton[0].setText(mainObject.getMain_ex1());
-                vote_radioButton[1].setText(mainObject.getMain_ex2());
-                vote_radioButton[2].setText(mainObject.getMain_ex3());
-                vote_radioButton[3].setText(mainObject.getMain_ex4());
+                vote_questionTv.setText(voteObject.getVote_question());
+                vote_radioButton[0].setText(voteObject.getVote_ex(1));
+                vote_radioButton[1].setText(voteObject.getVote_ex(2));
+                vote_radioButton[2].setText(voteObject.getVote_ex(3));
+                vote_radioButton[3].setText(voteObject.getVote_ex(4));
 
                 if(manager.selectMy(today_YYYYMMDD) != null)
                 {
@@ -417,7 +417,7 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
         Log.d("SUN","calenderSelect : " +dates +" / " + select_date);
 
         if(!dates.equals("")) {
-            if (dates.equals(day_YYYYMMDD)) {
+            if (dates.equals(today_YYYYMMDD)) {
                 long NowTime = ((MainActivity) MainActivity.mContext).NowTime;
                 try {
                     if ((df_time.parse(today_YYYYMMDD + " 00:00:00")).getTime() <= NowTime && NowTime < (df_time.parse(today_YYYYMMDD + " 18:45:00")).getTime()) {
@@ -463,21 +463,20 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
         if((voteObject = manager.selectVote(select_date)) != null){
             float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, mActivity.getResources().getDisplayMetrics());
 
-            int total_count = Integer.parseInt(voteObject.getVote_total());
-            Log.d("SUN","Total count : " + total_count);
-            for(int i=0; i<4; i++) {
-                vote_valueTv[i].setText(voteObject.getVote_ex(i + 1));
-                int count = Integer.parseInt(voteObject.getVote_count(i+1));
-                Log.d("SUN","count : " + count);
-                float percent = (count/(float)total_count)*100;
-                Log.d("SUN","percent : " + percent);
-                vote_on_btn[i].setLayoutParams(new TableRow.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, (int)px, 100-percent));
-                vote_off_btn[i].setLayoutParams(new TableRow.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,(int)px, percent));
-                vote_countTv[i].setText(voteObject.getVote_count(i+1));
-            }
             vote_questionTv.setText(voteObject.getVote_question());
             vote_prize_totalTv.setText(voteObject.getVote_prize_total());
             vote_totalTv.setText(voteObject.getVote_total());
+
+            int total_count = Integer.parseInt(voteObject.getVote_total());
+            for(int i=0; i<4; i++) {
+                vote_valueTv[i].setText(voteObject.getVote_ex(i+1));
+                vote_countTv[i].setText(voteObject.getVote_count(i+1));
+
+                int count = Integer.parseInt(voteObject.getVote_count(i+1));
+                float percent = (count/(float)total_count)*100;
+                vote_on_btn[i].setLayoutParams(new TableRow.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, (int)px, 100-percent));
+                vote_off_btn[i].setLayoutParams(new TableRow.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,(int)px, percent));
+            }
         }
         if((myObject = manager.selectMy(select_date)) != null) {
             vote_resultTv[Integer.parseInt(myObject.getMy_select_number()) - 1].setVisibility(View.VISIBLE);
@@ -534,7 +533,7 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Log.d("SUN", "e : " + e.toString());
+                    Log.d("SUN", "VoteFragment # setVote_Server e : " + e.toString());
                 }
             }
 
@@ -551,7 +550,7 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
     void getMain_Server() {
         AsyncHttpClient client = new AsyncHttpClient();
         Log.d("SUN", "VoteFragment # getMain_Server()");
-        client.get("http://onepercentserver.azurewebsites.net/OnePercentServer/main.do", new AsyncHttpResponseHandler() {
+        client.get("http://onepercentserver.azurewebsites.net/OnePercentServer/todayQuestion.do", new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {    }
 
@@ -561,33 +560,22 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
                 String res = new String(response);
                 try {
                     JSONObject object = new JSONObject(res);
-                    String objStr = object.get("main_result") + "";
+                    String objStr = object.get("todayQuestion") + "";
                     JSONArray arr = new JSONArray(objStr);
                     for (int i = 0; i < arr.length(); i++) {
-
-                        MySharedPreference pref = new MySharedPreference(mContext);
-
                         JSONObject obj = (JSONObject) arr.get(i);
-
-                        String gift = (String) obj.get("gift_name");
-                        String question = (String) obj.get("question");
-                        String today = (String) obj.get("today");
-                        String giftPng = (String)obj.get("gift_png");
-
-                        vote_questionTv.setText(question);
-
+                        String question = (String) obj.get("vote_question");
                         String ex[] = new String[4];
-                        JSONArray exArr = (JSONArray) obj.get("example");
-                        for (int z = 1; z <= 4; z++) {
-                            JSONObject exObj = (JSONObject) exArr.get(0);
-                            ex[z-1] = (String) exObj.get(z + "");
+                        for (int z = 0; z < 4; z++) {
+                            ex[z] = (String) obj.get("ex"+(z+1)+"_value");
+                            vote_radioButton[z].setText(ex[z]);
                         }
-                        manager.insertMain(new MainObject(today,question,ex[0],ex[1],ex[2],ex[3],gift,giftPng));
-
+                        vote_questionTv.setText(question);
+                        manager.insertVote(new VoteObject(today_YYYYMMDD,question,ex[0],ex[1],ex[2],ex[3]));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Log.d("SUN", "e : " + e.toString());
+                    Log.d("SUN", "VoteFragment # getMain_Server e : " + e.toString());
                 }
             }
             @Override
