@@ -13,14 +13,19 @@ public class PrizeObject {
     String prize_gift="";
     String prize_img="";
 
-    public PrizeObject(String prize_date, String prize_people, String prize_gift, String prize_img) {
-        this.prize_date  =prize_date;
-        this.prize_people  = prize_people;
-        this.prize_gift = prize_gift;
-        this.prize_img = prize_img;
+    public PrizeObject(String prize_people) {
+        this.prize_people = prize_people;
     }
 
-    public PrizeObject( String prize_gift, String prize_img) {
+    public PrizeObject(String prize_date, String prize_gift, String prize_img) {
+        this.prize_date = prize_date;
+        this.prize_gift = prize_gift;
+        this.prize_img  =prize_img;
+    }
+
+    public PrizeObject(String prize_date, String prize_gift, String prize_img,  String prize_people) {
+        this.prize_date = prize_date;
+        this.prize_people = prize_people;
         this.prize_gift = prize_gift;
         this.prize_img  =prize_img;
     }
@@ -46,7 +51,7 @@ public class PrizeObject {
     public String toString() {
         return "PrizeObject{" +
                 " prize_date='" + prize_date + '\'' +
-                ", prize_peopLe='" + prize_people + '\'' +
+                ", prize_people='" + prize_people + '\'' +
                 ", prize_gift='" + prize_gift + '\'' +
                 ", prize_img='" + prize_img + '\'' +
                 '}';

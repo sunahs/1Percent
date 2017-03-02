@@ -132,7 +132,7 @@ public class MainActivity extends FontBaseActvity {
         Intent intent = new Intent(this,MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-//        finish();
+        finish();
 
 
         startActivity(intent);

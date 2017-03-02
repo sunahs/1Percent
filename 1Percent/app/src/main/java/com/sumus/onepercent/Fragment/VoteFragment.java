@@ -38,6 +38,7 @@ import com.sumus.onepercent.R;
 import com.sumus.onepercent.SQLite.DBManager;
 import com.sumus.onepercent.SQLite.MainObject;
 import com.sumus.onepercent.SQLite.MyObject;
+import com.sumus.onepercent.SQLite.PrizeObject;
 import com.sumus.onepercent.SQLite.VoteObject;
 
 import org.json.JSONArray;
@@ -63,8 +64,12 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
         calenderSelect() : 달력 날짜 선택시 ui 변화
         init_Vote_result() : 투표 데이터 초기화
         vote_result_setting() : 날짜 선택에 따른 투표 데이터 동기화
+
         setVote_Server() : 서버 - 투표 결과 전송 set
-        getMain_Server() : 서버 - 오늘의 데이터 get
+        getTodayQuestion_Server() : 서버 - 오늘의 데이터 get
+        getSinceVoteResult_Server() : 서버 - 해당 날부터 최근 당첨 결과
+        getAllVoteResult_Server() : 서버 - 모든 당첨 결과
+
     */
     // frgment init data
     private static final String ARG_PARAM1 = "param1";
@@ -194,26 +199,24 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
         if((voteObject=manager.selectVote(today_YYYYMMDD))==null)
         {
             Log.d("SUN", "VoteFragmet # db null");
-            getMain_Server();
+            getTodayQuestion_Server(day_YYYYMMDD);
         }
         else
         {
             try {
-                Log.d("SUN","VoteFragment # selectMain");
                 vote_questionTv.setText(voteObject.getVote_question());
                 vote_radioButton[0].setText(voteObject.getVote_ex(1));
                 vote_radioButton[1].setText(voteObject.getVote_ex(2));
                 vote_radioButton[2].setText(voteObject.getVote_ex(3));
                 vote_radioButton[3].setText(voteObject.getVote_ex(4));
+                for(int i=0; i<4; i++)
+                    vote_radioButton[i].setClickable(false);
 
-                if(manager.selectMy(today_YYYYMMDD) != null)
+                if(manager.selectMy(today_YYYYMMDD) != null) // 오늘 내 투표 여부 확인
                 {
                     MyObject myObject =manager.selectMy(today_YYYYMMDD);
                     vote_radioButton [Integer.parseInt(myObject.getMy_select_number())-1].setChecked(true);
-                    for(int i=0; i<4; i++)
-                    {
-                        vote_radioButton[i].setClickable(false);
-                    }
+
                     vote_voteBtn.setBackground(getResources().getDrawable(R.mipmap.icon_vote_able_btn));
                 }
             }
@@ -225,7 +228,7 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
         long now_time = System.currentTimeMillis(); // 현재시간
         today_YYYYMMDD = df.format(now_time);
         try {
-            if( (df_time.parse(today_YYYYMMDD+" 00:00:00")).getTime()  <=  now_time  && now_time < (df_time.parse(today_YYYYMMDD+" 15:00:00")).getTime()  ) // 투표결과발표전
+            if( (df_time.parse(today_YYYYMMDD+" 00:00:00")).getTime()  <=  now_time  && now_time < (df_time.parse(today_YYYYMMDD+" 18:45:00")).getTime()  ) // 투표결과발표전
             {
                 vote_prize_before.setVisibility(View.VISIBLE);
                 vote_prize_after.setVisibility(View.GONE);
@@ -233,9 +236,21 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
             else{
                 vote_prize_before.setVisibility(View.GONE);
                 vote_prize_after.setVisibility(View.VISIBLE);
+
+                if(manager.selectTodayVoteResult(today_YYYYMMDD).equals("0")){
+                    getSinceVoteResult_Server(day_YYYYMMDD);
+                }
+                vote_result_setting(today_YYYYMMDD);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        if( !pref.getPreferences("app","first").equals("no")){
+            getAllVoteResult_Server();
+            getWinnerResult_Server();
+            pref.setPreferences("app","first","no");
         }
     }
 
@@ -267,7 +282,7 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
                 SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
                 long NowTime =  ((MainActivity) MainActivity.mContext).NowTime;
                 try {
-                    if( (df.parse(today_YYYYMMDD+" 00:00:00")).getTime()  <=  NowTime  && NowTime < (df.parse(today_YYYYMMDD+" 14:00:00")).getTime()  ) // 투표가능시간
+                    if( (df.parse(today_YYYYMMDD+" 11:00:00")).getTime()  <=  NowTime  && NowTime < (df.parse(today_YYYYMMDD+" 14:00:00")).getTime()  ) // 투표가능시간
                     {
                         if(vote_number<=0){
                             Toast.makeText(mActivity, "보기를 선택해 주세요", Toast.LENGTH_SHORT).show();
@@ -417,17 +432,20 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
         Log.d("SUN","calenderSelect : " +dates +" / " + select_date);
 
         if(!dates.equals("")) {
-            if (dates.equals(today_YYYYMMDD)) {
+            if (select_date.equals(today_YYYYMMDD)) {
                 long NowTime = ((MainActivity) MainActivity.mContext).NowTime;
                 try {
                     if ((df_time.parse(today_YYYYMMDD + " 00:00:00")).getTime() <= NowTime && NowTime < (df_time.parse(today_YYYYMMDD + " 18:45:00")).getTime()) {
                         vote_prize_before.setVisibility(View.VISIBLE);
                         vote_prize_after.setVisibility(View.GONE);
+                        Log.d("SUN","당첨발표전");
                     } else {
                         vote_prize_before.setVisibility(View.GONE);
                         vote_prize_after.setVisibility(View.VISIBLE);
+
                         init_Vote_result();
                         vote_result_setting(select_date);
+                        Log.d("SUN","당첨발표후");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -467,11 +485,13 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
             vote_prize_totalTv.setText(voteObject.getVote_prize_total());
             vote_totalTv.setText(voteObject.getVote_total());
 
+            for(int i=0; i<4; i++) {
+                vote_valueTv[i].setText(voteObject.getVote_ex(i + 1));
+                vote_countTv[i].setText(voteObject.getVote_count(i + 1));
+            }
+
             int total_count = Integer.parseInt(voteObject.getVote_total());
             for(int i=0; i<4; i++) {
-                vote_valueTv[i].setText(voteObject.getVote_ex(i+1));
-                vote_countTv[i].setText(voteObject.getVote_count(i+1));
-
                 int count = Integer.parseInt(voteObject.getVote_count(i+1));
                 float percent = (count/(float)total_count)*100;
                 vote_on_btn[i].setLayoutParams(new TableRow.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, (int)px, 100-percent));
@@ -547,10 +567,12 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
         });
     }
 
-    void getMain_Server() {
+    void getTodayQuestion_Server(String vote_date) {
         AsyncHttpClient client = new AsyncHttpClient();
-        Log.d("SUN", "VoteFragment # getMain_Server()");
-        client.get("http://onepercentserver.azurewebsites.net/OnePercentServer/todayQuestion.do", new AsyncHttpResponseHandler() {
+        RequestParams params = new RequestParams();
+        params.add("vote_date", vote_date);
+        Log.d("SUN", "VoteFragment # getTodayQuestion_Server()");
+        client.get("http://onepercentserver.azurewebsites.net/OnePercentServer/todayQuestion.do",params, new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {    }
 
@@ -575,16 +597,164 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Log.d("SUN", "VoteFragment # getMain_Server e : " + e.toString());
+                    Log.d("SUN", "VoteFragment # getTodayQuestion_Server e : " + e.toString());
                 }
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.d("SUN", "VoteFragment # getMain_Server # onFailure // statusCode : " + statusCode +  " , error : " + error.toString());
+                Log.d("SUN", "VoteFragment # getTodayQuestion_Server # onFailure // statusCode : " + statusCode +  " , error : " + error.toString());
             }
             @Override
             public void onRetry(int retryNo) {  }
         });
     }
 
+    void getSinceVoteResult_Server(String vote_date) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.add("vote_date", vote_date);
+        Log.d("SUN", "VoteFragment # getSinceVoteResult_Server() vote_date : "+ vote_date);
+        client.get("http://onepercentserver.azurewebsites.net/OnePercentServer/voteResultSince.do",params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onStart() {    }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+                Log.d("SUN", "statusCode : " + statusCode + " , response : " + new String(response));
+                String res = new String(response);
+                try {
+                    JSONObject object = new JSONObject(res);
+                    String objStr = object.get("voteResultSince") + "";
+                    JSONArray arr = new JSONArray(objStr);
+                    for (int i = 0; i < arr.length(); i++) {
+
+                        MySharedPreference pref = new MySharedPreference(mContext);
+
+                        JSONObject obj = (JSONObject) arr.get(i);
+
+                        String vote_date = (String) obj.get("vote_date");
+                        String vote_question = (String) obj.get("vote_question");
+                        String vote_ex[] = new String[4];
+                        int vote_count[] = new int[4];
+                        for (int z=0; z<4; z++)
+                        {
+                            vote_ex[z] =  (String) obj.get("ex"+(z+1)+"_value");
+                            vote_count[z] = (int) obj.get("ex"+(z+1)+"_count");
+                        }
+
+                        int vote_total = (int)obj.get("total_count");
+                        int vote_prize_total = (int)obj.get("prize_count");
+
+
+                        manager.insertVote(vote_date.replace(".",""), new VoteObject(vote_count[0]+"",vote_count[1]+"",vote_count[2]+"",vote_count[3]+"",vote_total+"",vote_prize_total+"","1","1"));
+                        vote_result_setting(today_YYYYMMDD);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d("SUN", "VoteFragment # getSinceVoteResult_Server e : " + e.toString());
+                }
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.d("SUN", "VoteFragment # getSinceVoteResult_Server # onFailure // statusCode : " + statusCode +  " , error : " + error.toString());
+            }
+            @Override
+            public void onRetry(int retryNo) {  }
+        });
+    }
+
+    void getAllVoteResult_Server() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        Log.d("SUN", "MainFragment # getAllVoteResult_Server()");
+        client.get("http://onepercentserver.azurewebsites.net/OnePercentServer/voteResult.do", new AsyncHttpResponseHandler() {
+            @Override
+            public void onStart() {    }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+                Log.d("SUN", "statusCode : " + statusCode + " , response : " + new String(response));
+                String res = new String(response);
+                try {
+                    JSONObject object = new JSONObject(res);
+                    String objStr = object.get("voteTotalResult") + "";
+                    JSONArray arr = new JSONArray(objStr);
+                    for (int i = 0; i < arr.length(); i++) {
+
+                        MySharedPreference pref = new MySharedPreference(mContext);
+
+                        JSONObject obj = (JSONObject) arr.get(i);
+
+                        String vote_date = (String) obj.get("vote_date");
+                        String vote_question = (String) obj.get("vote_question");
+                        String vote_ex[] = new String[4];
+                        int vote_count[] = new int[4];
+                        for (int z=0; z<4; z++)
+                        {
+                            vote_ex[z] =  (String) obj.get("ex"+(z+1)+"_value");
+                            vote_count[z] = (int) obj.get("ex"+(z+1)+"_count");
+                        }
+
+                        int vote_total = (int)obj.get("total_count");
+                        int vote_prize_total = (int)obj.get("prize_count");
+
+                        manager.insertVote(new VoteObject(vote_date.replace(".",""),vote_question,vote_ex[0],vote_ex[1],vote_ex[2],vote_ex[3],vote_count[0]+"",vote_count[1]+"",vote_count[2]+"",vote_count[3]+"",vote_total+"",vote_prize_total+"","1","1"));
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d("SUN", "MainFragment # getAllVoteResult_Server e : " + e.toString());
+                }
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.d("SUN", "MainFragment # getAllVoteResult_Server # onFailure // statusCode : " + statusCode +  " , error : " + error.toString());
+            }
+            @Override
+            public void onRetry(int retryNo) {  }
+        });
+    }
+
+    void getWinnerResult_Server() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        Log.d("SUN", "VoteFragment # getWinnerResult_Server()");
+        client.get("http://onepercentserver.azurewebsites.net/OnePercentServer/WinnerResult.do", new AsyncHttpResponseHandler() {
+            @Override
+            public void onStart() {    }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+                Log.d("SUN", "statusCode : " + statusCode + " , response : " + new String(response));
+                String res = new String(response);
+                try {
+                    JSONObject object = new JSONObject(res);
+                    String objStr = object.get("winnerResult") + "";
+                    JSONArray arr = new JSONArray(objStr);
+                    for (int i = 0; i < arr.length(); i++) {
+
+                        MySharedPreference pref = new MySharedPreference(mContext);
+
+                        JSONObject obj = (JSONObject) arr.get(i);
+
+                        String vote_date = (String) obj.get("vote_date");
+                        String giftName = (String) obj.get("gift_name");
+                        String giftPng = (String)obj.get("gift_png");
+                        String winner = (String)obj.get("winner");
+
+                        manager.insertPrize(new PrizeObject(vote_date.replace(".",""),giftName, giftPng,winner));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d("SUN", "VoteFragment # getWinnerResult_Server # e : " + e.toString());
+                }
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.d("SUN", "VoteFragment # getWinnerResult_Server # onFailure // statusCode : " + statusCode +  " , error : " + error.toString());
+            }
+            @Override
+            public void onRetry(int retryNo) {  }
+        });
+    }
+
+    //
 }

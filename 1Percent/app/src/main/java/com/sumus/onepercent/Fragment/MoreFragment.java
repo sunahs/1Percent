@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sumus.onepercent.FontBaseActvity;
 import com.sumus.onepercent.Object.MySharedPreference;
 import com.sumus.onepercent.R;
 
@@ -62,7 +63,14 @@ public class MoreFragment extends Fragment{
         mActivity = getActivity();
         pref = new MySharedPreference(mContext);
 
+        InitWidget();
+
+        FontBaseActvity fontBaseActvity = new FontBaseActvity(); // 폰트 적용
+        fontBaseActvity.setGlobalFont(views);
         return views;
     }
 
+    public void InitWidget(){
+
+    }
 }

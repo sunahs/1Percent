@@ -16,10 +16,10 @@ public class DBManager {
 
     private static final String SD_PATH = Environment
             .getExternalStorageDirectory().getAbsolutePath();
-    private final String ROOT_DIR = SD_PATH + "/Letter/";
+    private final String ROOT_DIR = SD_PATH + "/Onepercent/";
 
     // DB관련 상수 선언
-    private static final String dbName = "Onpercent.db";
+    private static final String dbName = "Onepercent.db";
     private static final String voteTable = "VoteTable";
     private static final String prizeTable = "PrizeTable";
     private static final String myTable = "MyTable";
@@ -35,7 +35,8 @@ public class DBManager {
     // 생성자
     public DBManager(Context context) {
         this.context = context;
-        this.opener = new OpenHelper(context, dbName, null, dbVersion);
+        this.opener = new OpenHelper(context, ROOT_DIR+dbName, null, dbVersion);
+        Log.d("SUN","ROOT_DIR+dbName : "+ ROOT_DIR+dbName);
         db = opener.getWritableDatabase();
     }
 
@@ -107,10 +108,26 @@ public class DBManager {
         values.put("todayresult_state",info.getTodayresult_state());
         try{
             db.update(voteTable,values,"vote_date=?",new String[]{String.valueOf(date)});
-            db.close();
+//            db.close();
             Log.d("SUN","insertVote date : "+values.toString());
         }catch(Exception e) {
         }
+    }
+
+    public String selectTodayVoteResult(String vote_date) // 조회
+    {
+        String sql = "select * from " + voteTable + " where vote_date like '"+vote_date+"';";
+        Cursor results = db.rawQuery(sql, null);
+
+        results.moveToFirst();
+        String todayresult_state="";
+        while (!results.isAfterLast()) {
+            todayresult_state = results.getString(13);
+            Log.d("SUN","todayresult_state : "+todayresult_state);
+            results.moveToNext();
+        }
+        results.close();
+        return todayresult_state;
     }
 
 
@@ -142,7 +159,7 @@ public class DBManager {
 
         try{
             db.insert(prizeTable, null, values);
-            db.close();
+//            db.close();
             Log.d("SUN","insertPrize : "+values.toString());
         }catch(Exception e) {
         }
@@ -154,7 +171,7 @@ public class DBManager {
         values.put("prize_people",info.getPrize_people());
         try{
             db.update(prizeTable,values,"vote_date=?",new String[]{String.valueOf(date)});
-            db.close();
+//            db.close();
             Log.d("SUN","insertPrize : "+values.toString());
         }catch(Exception e) {
         }
@@ -168,7 +185,7 @@ public class DBManager {
         results.moveToFirst();
         PrizeObject info = null;
         while (!results.isAfterLast()) {
-            info = new PrizeObject(results.getString(0), results.getString(1),results.getString(2),results.getString(3));
+            info = new PrizeObject(results.getString(0),results.getString(2),results.getString(3), results.getString(1));
             Log.d("SUN","selectPrize : "+info.toString());
             results.moveToNext();
         }
@@ -202,6 +219,6 @@ public class DBManager {
             results.close();
             return info;
 
-    }
+}
 
 }
