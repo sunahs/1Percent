@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,8 +24,7 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".JoinActivity" />
-        <activity android:name=".LoginActivity"/>
-
+        <activity android:name=".LoginActivity" />
 
         <!-- FCM -->
         <service android:name=".FCM.FirebaseMessagingService">
@@ -38,6 +37,12 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
+        <activity android:name=".MoreActivity.AdminActivity" />
+        <activity android:name=".MoreActivity.CustomerCenterActivity" />
+        <activity android:name=".MoreActivity.NoticeActivity" />
+        <activity android:name=".MoreActivity.PushActivity" />
+        <activity android:name=".MoreActivity.VersionActivity"></activity>
     </application>
 
 </manifest>

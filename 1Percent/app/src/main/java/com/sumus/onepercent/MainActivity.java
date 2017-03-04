@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.sumus.onepercent.PageAdapter.PagerAdapter;
 import com.sumus.onepercent.PageAdapter.SectionsPagerAdapter;
 
@@ -133,10 +135,9 @@ public class MainActivity extends FontBaseActvity {
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
-
-
         startActivity(intent);
         Log.d("SUN","RESTART");
     }
+
 
 }

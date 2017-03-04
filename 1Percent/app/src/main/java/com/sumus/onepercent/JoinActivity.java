@@ -219,6 +219,7 @@ public class JoinActivity  extends FontBaseActvity implements TextWatcher, View.
                 String select_date;
                 if (resultCode == RESULT_OK) {
                     finish();
+                    ((MainActivity)MainActivity.mContext).reActivity();
                 } else {
 
                 }

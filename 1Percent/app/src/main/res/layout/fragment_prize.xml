@@ -8,7 +8,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginBottom="15dp"
         android:background="@drawable/topbottom_line">
 
         <ImageButton
@@ -44,11 +43,40 @@
             android:src="@mipmap/icon_date_right" />
     </RelativeLayout>
 
+
+    <!-- 당첨자 발표 전-->
+    <LinearLayout
+        android:id="@+id/prize_beforeLayout"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:src="@mipmap/img_mark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:textColor="@color/colorBlue"
+            android:layout_marginTop="50dp"
+            android:text="오후 6시 45에 당첨자를 확인해 주세요"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <!-- 당첨자 발표 후 -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:layout_marginTop="15dp"
+            android:id="@+id/prize_afterLayout"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -128,7 +156,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center_horizontal"
-                            android:text="0명"
+                            android:text="0"
                             android:textColor="@color/colorBlue"
                             android:textSize="15dp"
                             android:textStyle="bold" />
@@ -137,7 +165,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center_horizontal"
-                            android:text=")"
+                            android:text="명)"
                             android:textColor="@color/colorBlue"
                             android:textSize="15dp"
                             android:textStyle="bold" />
@@ -150,20 +178,20 @@
                         android:layout_weight="1"
                         android:columnCount="2">
 
-                        <TextView
-                            android:id="@+id/prize_listTv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:layout_gravity="center_horizontal"
-                            android:text="01011112222" />
+                        <!--<TextView-->
+                            <!--android:id="@+id/prize_listTv"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_columnWeight="1"-->
+                            <!--android:layout_gravity="center_horizontal"-->
+                            <!--android:text="01011112222" />-->
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:layout_gravity="center_horizontal"
-                            android:text="01011112222" />
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_columnWeight="1"-->
+                            <!--android:layout_gravity="center_horizontal"-->
+                            <!--android:text="01011112222" />-->
 
                     </GridLayout>
 

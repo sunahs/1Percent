@@ -12,22 +12,34 @@
         android:layout_height="50dp"
         android:background="@drawable/topbottom_line">
 
-        <TextView
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
             android:paddingLeft="20dp"
-            android:text="계정관리"
-            android:textColor="@color/colorText"
-            android:textSize="13sp" />
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_person"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="계정관리"
+                android:textColor="@color/colorText"
+                android:textSize="13sp" />
+        </LinearLayout>
+
 
         <ImageButton
+            android:id="@+id/more_adminBtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
             android:background="@color/colorTran"
-            android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:src="@mipmap/icon_date_right" />
     </RelativeLayout>
@@ -38,22 +50,34 @@
         android:layout_height="50dp"
         android:background="@drawable/bottom_line">
 
-        <TextView
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
             android:paddingLeft="20dp"
-            android:text="공지사항"
-            android:textColor="@color/colorText"
-            android:textSize="13sp" />
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_notice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="공지사항"
+                android:textColor="@color/colorText"
+                android:textSize="13sp" />
+        </LinearLayout>
+
 
         <ImageButton
+            android:id="@+id/more_noticeBtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
             android:background="@color/colorTran"
-            android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:src="@mipmap/icon_date_right" />
     </RelativeLayout>
@@ -64,22 +88,33 @@
         android:layout_height="50dp"
         android:background="@drawable/bottom_line">
 
-        <TextView
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
             android:paddingLeft="20dp"
-            android:text="고객센터"
-            android:textColor="@color/colorText"
-            android:textSize="13sp" />
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="고객센터"
+                android:textColor="@color/colorText"
+                android:textSize="13sp" />
+        </LinearLayout>
 
         <ImageButton
+            android:id="@+id/more_centerBtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
             android:background="@color/colorTran"
-            android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:src="@mipmap/icon_date_right" />
     </RelativeLayout>
@@ -90,22 +125,33 @@
         android:layout_height="50dp"
         android:background="@drawable/bottom_line">
 
-        <TextView
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
             android:paddingLeft="20dp"
-            android:text="PUSH 알림"
-            android:textColor="@color/colorText"
-            android:textSize="13sp" />
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_push"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="PUSH 알림"
+                android:textColor="@color/colorText"
+                android:textSize="13sp" />
+        </LinearLayout>
 
         <ImageButton
+            android:id="@+id/more_pushBtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
             android:background="@color/colorTran"
-            android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:src="@mipmap/icon_date_right" />
     </RelativeLayout>
@@ -116,22 +162,33 @@
         android:layout_height="50dp"
         android:background="@drawable/bottom_line">
 
-        <TextView
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
             android:paddingLeft="20dp"
-            android:text="버전정보"
-            android:textColor="@color/colorText"
-            android:textSize="13sp" />
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_version"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="버전정보"
+                android:textColor="@color/colorText"
+                android:textSize="13sp" />
+        </LinearLayout>
 
         <ImageButton
+            android:id="@+id/more_versionBtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
             android:background="@color/colorTran"
-            android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:src="@mipmap/icon_date_right" />
     </RelativeLayout>

@@ -3,6 +3,7 @@ package com.sumus.onepercent.Fragment;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -34,6 +35,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.Base64;
 import com.loopj.android.http.RequestParams;
 import com.sumus.onepercent.FontBaseActvity;
+import com.sumus.onepercent.JoinActivity;
 import com.sumus.onepercent.MainActivity;
 import com.sumus.onepercent.Object.MyCalendar;
 import com.sumus.onepercent.Object.MySharedPreference;
@@ -49,6 +51,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -56,7 +59,7 @@ import cz.msebera.android.httpclient.Header;
  * Created by SUNAH on 2016-11-26.
  */
 
-public class PrizeFragment extends Fragment implements View.OnClickListener{
+public class PrizeFragment extends Fragment implements View.OnClickListener {
 
     // frgment init data
     private static final String ARG_PARAM1 = "param1";
@@ -74,7 +77,7 @@ public class PrizeFragment extends Fragment implements View.OnClickListener{
     String today_YYYYMMDD, day_YYYYMMDD;
     String calender_YYYYMMDD;
     SimpleDateFormat df_circle = new SimpleDateFormat("yyyy.MM.dd");
-    SimpleDateFormat df= new SimpleDateFormat("yyyyMMdd");
+    SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
     SimpleDateFormat df_time = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
 
     Animation click_animation;
@@ -82,16 +85,18 @@ public class PrizeFragment extends Fragment implements View.OnClickListener{
     int gridHeight = 0;
 
     // 위젯
-    TextView prize_dateTv, prize_giftTv, prize_listTv, prize_totalTv;
-    ImageButton  prize_calender_preBtn, prize_calender_nextBtn;
+    TextView prize_dateTv, prize_giftTv, prize_totalTv;
+    ImageButton prize_calender_preBtn, prize_calender_nextBtn;
     ImageView prize_giftImg;
     Button prize_moreBtn;
     GridLayout prize_gridLayout;
+    LinearLayout prize_beforeLayout, prize_afterLayout;
 
     // DB
     DBManager manager;
 
-public PrizeFragment(){}
+    public PrizeFragment() {
+    }
 
     public static PrizeFragment newInstance(String param1, String param2) {
         PrizeFragment fragment = new PrizeFragment();
@@ -127,33 +132,34 @@ public PrizeFragment(){}
         return views;
     }
 
-    public void InitWidget(){
-        click_animation = AnimationUtils.loadAnimation(mActivity,R.anim.alpha);
-        manager =new DBManager(mActivity);
+    public void InitWidget() {
+        click_animation = AnimationUtils.loadAnimation(mActivity, R.anim.alpha);
+        manager = new DBManager(mActivity);
 
         long nowdate = System.currentTimeMillis(); // 현재시간
         today_YYYYMMDD = df.format(nowdate).toString();
         day_YYYYMMDD = df_circle.format(nowdate).toString();
 
-        prize_dateTv = (TextView)views.findViewById(R.id.prize_dateTv);
+        prize_dateTv = (TextView) views.findViewById(R.id.prize_dateTv);
         prize_dateTv.setText(day_YYYYMMDD);
         prize_dateTv.setOnClickListener(this);
 
-        prize_giftTv = (TextView)views.findViewById(R.id.prize_giftTv);
-        prize_listTv = (TextView)views.findViewById(R.id.prize_listTv);
-        prize_totalTv = (TextView)views.findViewById(R.id.prize_totalTv);
+        prize_giftTv = (TextView) views.findViewById(R.id.prize_giftTv);
+        prize_totalTv = (TextView) views.findViewById(R.id.prize_totalTv);
 
-        prize_calender_preBtn = (ImageButton)views.findViewById(R.id.prize_calender_preBtn);
-        prize_calender_nextBtn = (ImageButton)views.findViewById(R.id.prize_calender_nextBtn);
+        prize_calender_preBtn = (ImageButton) views.findViewById(R.id.prize_calender_preBtn);
+        prize_calender_nextBtn = (ImageButton) views.findViewById(R.id.prize_calender_nextBtn);
         prize_calender_preBtn.setOnClickListener(this);
         prize_calender_nextBtn.setOnClickListener(this);
 
-        prize_giftImg = (ImageView)views.findViewById(R.id.prize_giftImg);
-        prize_gridLayout = (GridLayout)views.findViewById(R.id.prize_gridLayout);
+        prize_giftImg = (ImageView) views.findViewById(R.id.prize_giftImg);
+        prize_gridLayout = (GridLayout) views.findViewById(R.id.prize_gridLayout);
 
-        prize_moreBtn = (Button)views.findViewById(R.id.prize_moreBtn);
+        prize_moreBtn = (Button) views.findViewById(R.id.prize_moreBtn);
         prize_moreBtn.setOnClickListener(this);
 
+        prize_beforeLayout = (LinearLayout) views.findViewById(R.id.prize_beforeLayout);
+        prize_afterLayout = (LinearLayout) views.findViewById(R.id.prize_afterLayout);
 
 //        prize_gridLayout.getViewTreeObserver()
 //                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -168,23 +174,40 @@ public PrizeFragment(){}
         initData();
     }
 
-    public void initData(){
+    public void initData() {
         PrizeObject prizeObject;
-        if((prizeObject = manager.selectPrize(today_YYYYMMDD))==null)
-        {
+        if ((prizeObject = manager.selectPrize(today_YYYYMMDD)) == null) {
             Log.d("SUN", "PrizeFragment # db null");
             getTodayGift_Server(day_YYYYMMDD);
-        }
-        else
-        {
+        } else {
             try {
-                Log.d("SUN","PrizeFragment # db not null~!!!");
+                Log.d("SUN", "PrizeFragment # db not null~!!!");
                 prize_giftTv.setText(prizeObject.getPrize_gift());
-                prize_giftImg.setImageBitmap(byteArrayToBitmap(Base64.decode(pref.getPreferences("oneday","giftImg"), Base64.DEFAULT)));
-            }
-            catch (NullPointerException e){
+                prize_giftImg.setImageBitmap(byteArrayToBitmap(Base64.decode(pref.getPreferences("oneday", "giftImg"), Base64.DEFAULT)));
+            } catch (NullPointerException e) {
                 Log.d("SUN", "PrizeFragment # DB is null");
             }
+        }
+
+
+        long now_time = System.currentTimeMillis(); // 현재시간
+        today_YYYYMMDD = df.format(now_time);
+        try {
+            if ((df_time.parse(today_YYYYMMDD + " 00:00:00")).getTime() <= now_time && now_time < (df_time.parse(today_YYYYMMDD + " 18:45:00")).getTime()) // 투표결과발표전
+            {
+                prize_beforeLayout.setVisibility(View.VISIBLE);
+                prize_afterLayout.setVisibility(View.GONE);
+            } else {
+                prize_beforeLayout.setVisibility(View.GONE);
+                prize_afterLayout.setVisibility(View.VISIBLE);
+
+                if (manager.selectPrizePeole(today_YYYYMMDD).equals("")) {
+                    getWinnerResultSince_Server(day_YYYYMMDD);
+                }
+                prizeResult_setting(today_YYYYMMDD);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -193,10 +216,10 @@ public PrizeFragment(){}
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.prize_dateTv:
-                if(pref.getPreferences("user","userID").equals("")) {
-                    Toast.makeText(mActivity, "로그인 시 이용가능합니다.", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                if (pref.getPreferences("user", "userID").equals("")) {
+                    //Toast.makeText(mActivity, "로그인 시 이용가능합니다.", Toast.LENGTH_SHORT).show();
+                    loginPopup();
+                } else {
                     prize_dateTv.startAnimation(click_animation);
                     LayoutInflater inflate = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     View layout = inflate.inflate(R.layout.dialog_calender, null);
@@ -236,13 +259,11 @@ public PrizeFragment(){}
                 }
                 break;
             case R.id.prize_calender_preBtn:
-                if(pref.getPreferences("user","userID").equals("")) {
-                    Toast.makeText(mActivity, "로그인 시 이용가능합니다.", Toast.LENGTH_SHORT).show();
-                }
-                else if("2017.01.01".equals(prize_dateTv.getText().toString())){
+                if (pref.getPreferences("user", "userID").equals("")) {
+                    loginPopup();
+                } else if ("2017.01.01".equals(prize_dateTv.getText().toString())) {
                     Log.d("SUN", "2017.01.01 이전 X");
-                }
-                else {
+                } else {
                     prize_calender_preBtn.startAnimation(click_animation);
                     String dates = prize_dateTv.getText().toString();
                     MyCalendar myCalendar = new MyCalendar();
@@ -252,13 +273,11 @@ public PrizeFragment(){}
                 }
                 break;
             case R.id.prize_calender_nextBtn:
-                if(pref.getPreferences("user","userID").equals("")) {
-                    Toast.makeText(mActivity, "로그인 시 이용가능합니다.", Toast.LENGTH_SHORT).show();
-                }
-                else if(today_YYYYMMDD.equals(prize_dateTv.getText().toString().replace(".",""))){
+                if (pref.getPreferences("user", "userID").equals("")) {
+                    loginPopup();
+                } else if (today_YYYYMMDD.equals(prize_dateTv.getText().toString().replace(".", ""))) {
                     Log.d("SUN", "오늘 다음날 X");
-                }
-                else {
+                } else {
                     prize_calender_nextBtn.startAnimation(click_animation);
                     String dates1 = prize_dateTv.getText().toString();
                     MyCalendar myCalendar1 = new MyCalendar();
@@ -269,7 +288,7 @@ public PrizeFragment(){}
                 break;
             case R.id.prize_moreBtn:
                 PrizeObject prizeObject;
-                if((prizeObject = manager.selectPrize(prize_dateTv.getText().toString().replace(".",""))) != null){
+                if ((prizeObject = manager.selectPrize(prize_dateTv.getText().toString().replace(".", ""))) != null) {
                     String people = prizeObject.getPrize_people();
                     String list[] = people.split(" ");
                     prize_gridLayout.setColumnCount(2);
@@ -278,18 +297,17 @@ public PrizeFragment(){}
                     prize_moreBtn.setVisibility(View.GONE);
 
 
-                    for(int i=10; i<length; i++)
-                    {
-                        TextView tvChild =  new TextView(mActivity);
+                    for (int i = 10; i < length; i++) {
+                        TextView tvChild = new TextView(mActivity);
                         tvChild.setText(list[i]);
                         tvChild.setTextSize(14f);
                         tvChild.setTextColor(getResources().getColor(R.color.colorDarkGray));
                         tvChild.setGravity(Gravity.CENTER);
-                        if(pref.getPreferences("user", "userID").equals(list[i].replace("-",""))){
+                        if (pref.getPreferences("user", "userID").equals(list[i].replace("-", ""))) {
                             tvChild.setTextColor(getResources().getColor(R.color.colorPoint));
                         }
 
-                        GridLayout.LayoutParams param = new GridLayout.LayoutParams(GridLayout.spec(GridLayout.UNDEFINED, 1f),  GridLayout.spec(GridLayout.UNDEFINED, 1f));
+                        GridLayout.LayoutParams param = new GridLayout.LayoutParams(GridLayout.spec(GridLayout.UNDEFINED, 1f), GridLayout.spec(GridLayout.UNDEFINED, 1f));
                         param.setGravity(Gravity.CENTER);
                         prize_gridLayout.addView(tvChild, param);
                     }
@@ -300,87 +318,136 @@ public PrizeFragment(){}
         }
     }
 
-    void calenderSelect(String dates){
-        String select_date = dates.replace(".","");
-        Log.d("SUN","calenderSelect : " +dates +" / " + select_date);
+    void calenderSelect(String dates) {
+        String select_date = dates.replace(".", "");
+        Log.d("SUN", "calenderSelect : " + today_YYYYMMDD + " / " + select_date);
 
-        if (dates.equals(today_YYYYMMDD)) {
+        if (select_date.equals(today_YYYYMMDD)) {
             long NowTime = ((MainActivity) MainActivity.mContext).NowTime;
             try {
                 if ((df_time.parse(today_YYYYMMDD + " 00:00:00")).getTime() <= NowTime && NowTime < (df_time.parse(today_YYYYMMDD + " 18:45:00")).getTime()) {
+                    prize_beforeLayout.setVisibility(View.VISIBLE);
+                    prize_afterLayout.setVisibility(View.GONE);
+                    Log.d("SUN", "당첨발표전");
+                } else {
+                    prize_beforeLayout.setVisibility(View.GONE);
+                    prize_afterLayout.setVisibility(View.VISIBLE);
                     init_Prize_result();
                     prizeResult_setting(select_date);
-                    Log.d("SUN","당첨발표전");
-                } else {
-
-                    Log.d("SUN","당첨발표후");
+                    Log.d("SUN", "당첨발표후");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
+            prize_beforeLayout.setVisibility(View.GONE);
+            prize_afterLayout.setVisibility(View.VISIBLE);
             init_Prize_result();
             prizeResult_setting(select_date);
         }
     }
 
-    void init_Prize_result(){
+    void init_Prize_result() {
         prize_gridLayout.removeAllViews();
+        prize_giftTv.setText(" ");
+        prize_totalTv.setText(" ");
     }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    void prizeResult_setting(String select_date){
+    void prizeResult_setting(String select_date) {
         PrizeObject prizeObject;
-        if((prizeObject = manager.selectPrize(select_date)) != null){
+        if ((prizeObject = manager.selectPrize(select_date)) != null) {
 
 
             prize_giftTv.setText(prizeObject.getPrize_gift());
             String people = prizeObject.getPrize_people();
+//            List<String> peo = Arrays.asList(people.split(" "));
             String list[] = people.split(" ");
             prize_gridLayout.setColumnCount(2);
 
             int length = list.length;
-            prize_totalTv.setText(length+"");
-
-
-
-            if(length> 10) {
+            prize_totalTv.setText(length + "");
+            if (length > 10) {
                 prize_moreBtn.setVisibility(View.VISIBLE);
                 length = 10;
-            }
-            else
+            } else
                 prize_moreBtn.setVisibility(View.GONE);
 
-
-            for(int i=0; i<length; i++)
-            {
-                TextView tvChild =  new TextView(mActivity);
+            for (int i = 0; i < length; i++) {
+                TextView tvChild = new TextView(mActivity);
                 tvChild.setText(list[i]);
                 tvChild.setTextSize(14f);
                 tvChild.setTextColor(getResources().getColor(R.color.colorDarkGray));
                 tvChild.setGravity(Gravity.CENTER);
-                if(pref.getPreferences("user", "userID").equals(list[i].replace("-",""))){
+                if (pref.getPreferences("user", "userID").equals(list[i].replace("-", ""))) {
                     tvChild.setTextColor(getResources().getColor(R.color.colorPoint));
                 }
 
-                GridLayout.LayoutParams param = new GridLayout.LayoutParams(GridLayout.spec(GridLayout.UNDEFINED, 1f),  GridLayout.spec(GridLayout.UNDEFINED, 1f));
+                GridLayout.LayoutParams param = new GridLayout.LayoutParams(GridLayout.spec(GridLayout.UNDEFINED, 1f), GridLayout.spec(GridLayout.UNDEFINED, 1f));
                 param.setGravity(Gravity.CENTER);
                 prize_gridLayout.addView(tvChild, param);
             }
             FontBaseActvity fontBaseActvity = new FontBaseActvity(); // 폰트 적용
             fontBaseActvity.setGlobalFont(prize_gridLayout);
-
         }
-
     }
+
+    void getWinnerResultSince_Server(String vote_date) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        Log.d("SUN", "PrizeFragment # getWinnerResultSince_Server()");
+        RequestParams params = new RequestParams();
+        params.add("vote_date", vote_date);
+        client.get("http://onepercentserver.azurewebsites.net/OnePercentServer/WinnerResultSince.do", params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onStart() {
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+                Log.d("SUN", "statusCode : " + statusCode + " , response : " + new String(response));
+                String res = new String(response);
+                try {
+                    JSONObject object = new JSONObject(res);
+                    String objStr = object.get("winnerResultSince") + "";
+                    JSONArray arr = new JSONArray(objStr);
+                    for (int i = 0; i < arr.length(); i++) {
+
+                        JSONObject obj = (JSONObject) arr.get(i);
+
+                        String vote_date = (String) obj.get("vote_date");
+                        String giftName = (String) obj.get("gift_name");
+                        String giftPng = (String) obj.get("gift_png");
+                        String winner = (String) obj.get("winner");
+
+                        manager.insertPrize(vote_date.replace(".", ""), new PrizeObject(winner));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d("SUN", "PrizeFragment # getWinnerResultSince_Server # e : " + e.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.d("SUN", "PrizeFragment # getWinnerResultSince_Server # onFailure // statusCode : " + statusCode + " , error : " + error.toString());
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+            }
+        });
+    }
+
 
     void getTodayGift_Server(final String vote_date) {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.add("vote_date", vote_date);
         Log.d("SUN", "PrizeFragment # getTodayGift_Server()");
-        client.get("http://onepercentserver.azurewebsites.net/OnePercentServer/todayGift.do",params, new AsyncHttpResponseHandler() {
+        client.get("http://onepercentserver.azurewebsites.net/OnePercentServer/todayGift.do", params, new AsyncHttpResponseHandler() {
             @Override
-            public void onStart() {    }
+            public void onStart() {
+            }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
@@ -397,33 +464,37 @@ public PrizeFragment(){}
                         JSONObject obj = (JSONObject) arr.get(i);
 
                         String gift = (String) obj.get("gift_name");
-                        String giftPng = (String)obj.get("gift_png");
+                        String giftPng = (String) obj.get("gift_png");
 
                         prize_giftTv.setText(gift);
                         getImage_Server(giftPng); // 이미지
 
-                        manager.insertPrize(new PrizeObject(vote_date.replace(".",""),gift,giftPng));
+                        manager.insertPrize(new PrizeObject(vote_date.replace(".", ""), gift, giftPng));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Log.d("SUN", "PrizeFragment # getTodayGift_Server # e : " + e.toString());
                 }
             }
+
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.d("SUN", "PrizeFragment # getTodayGift_Server # onFailure // statusCode : " + statusCode +  " , error : " + error.toString());
+                Log.d("SUN", "PrizeFragment # getTodayGift_Server # onFailure // statusCode : " + statusCode + " , error : " + error.toString());
             }
+
             @Override
-            public void onRetry(int retryNo) {  }
+            public void onRetry(int retryNo) {
+            }
         });
     }
 
     void getImage_Server(String imgName) {
         AsyncHttpClient client = new AsyncHttpClient();
         Log.d("SUN", "MainFragment # getImage_Server()");
-        client.get("http://onepercentserver.azurewebsites.net/OnePercentServer/resources/common/image/"+imgName,  new AsyncHttpResponseHandler() {
+        client.get("http://onepercentserver.azurewebsites.net/OnePercentServer/resources/common/image/" + imgName, new AsyncHttpResponseHandler() {
             @Override
-            public void onStart() {            }
+            public void onStart() {
+            }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
@@ -432,21 +503,55 @@ public PrizeFragment(){}
                 prize_giftImg.setImageBitmap(bitmap);
 
                 String saveImage = Base64.encodeToString(response, Base64.DEFAULT);
-                pref.setPreferences("oneday","giftImg", saveImage);
+                pref.setPreferences("oneday", "giftImg", saveImage);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.d("SUN", "MainFragment # getImage_Server # onFailure // statusCode : " + statusCode +  " , error : " + error.toString());
+                Log.d("SUN", "MainFragment # getImage_Server # onFailure // statusCode : " + statusCode + " , error : " + error.toString());
             }
 
             @Override
-            public void onRetry(int retryNo) {    }
+            public void onRetry(int retryNo) {
+            }
         });
     }
 
-    public Bitmap byteArrayToBitmap(byte[] byteArray ) {  // byte -> bitmap 변환 및 반환
-        Bitmap bitmap = BitmapFactory.decodeByteArray( byteArray, 0, byteArray.length ) ;
-        return bitmap ;
+    public Bitmap byteArrayToBitmap(byte[] byteArray) {  // byte -> bitmap 변환 및 반환
+        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        return bitmap;
+    }
+
+    public void loginPopup() {
+        LayoutInflater inflate = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflate.inflate(R.layout.dialog_login, null);
+        FontBaseActvity fontBaseActvity = new FontBaseActvity(); // 폰트 적용
+        fontBaseActvity.setGlobalFont(layout);
+
+        Button dialog_loginCancleBtn = (Button) layout.findViewById(R.id.dialog_loginCancleBtn);
+        Button dialog_loginOkBtn = (Button) layout.findViewById(R.id.dialog_loginOkBtn);
+        TextView dialog_loginTv = (TextView) layout.findViewById(R.id.dialog_loginTv);
+
+        AlertDialog.Builder aDialog = new AlertDialog.Builder(mActivity);
+        aDialog.setView(layout);
+
+        final AlertDialog ad = aDialog.create();
+        ad.show();
+
+        dialog_loginTv.setText("로그인 하셔야 이용가능합니다. \n로그인하시겠습니까?");
+        dialog_loginCancleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ad.cancel();
+            }
+        });
+        dialog_loginOkBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mActivity, JoinActivity.class);
+                startActivity(intent);
+                ad.cancel();
+            }
+        });
     }
 }

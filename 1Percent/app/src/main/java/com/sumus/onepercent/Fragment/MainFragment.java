@@ -212,11 +212,11 @@ public class MainFragment extends Fragment implements View.OnClickListener{
         long base_time=0, now_time, gap_time;
         try {
             now_time = System.currentTimeMillis(); // 현재시간
-            if(    (df.parse(today_YYYYMMDD+" 00:00:00")).getTime() <= now_time && now_time  < (df.parse(today_YYYYMMDD+" 00:00:01")).getTime()  ){
+            if(  (df.parse(today_YYYYMMDD+" 00:00:00")).getTime() <= now_time && now_time  < (df.parse(today_YYYYMMDD+" 00:00:01")).getTime()  ){
                 if(!pref.getPreferences("app", "visted").replace(".","").equals(today_YYYYMMDD));
                     ((MainActivity)MainActivity.mContext).reActivity();
             }
-             if( now_time  < (df.parse(today_YYYYMMDD+" 11:00:00")).getTime()  ){
+            if( now_time  < (df.parse(today_YYYYMMDD+" 11:00:00")).getTime()  ){
                 base_time = (df.parse(today_YYYYMMDD+" 11:00:00")).getTime();
                  main_timerTv.setText("투표 대기 중");
                  main_subTimerTv.setText("투표 시작까지 남은 시간");
@@ -235,6 +235,9 @@ public class MainFragment extends Fragment implements View.OnClickListener{
                  ((MainActivity)MainActivity.mContext).NowTimeInt = 3;
             }
             else if( now_time  < (df.parse(today_YYYYMMDD+" 23:59:59")).getTime()  ){
+                if( now_time  <= (df.parse(today_YYYYMMDD+" 18:45:01")).getTime() ){
+                    ((MainActivity)MainActivity.mContext).reActivity();
+                }
                 base_time = (df.parse(today_YYYYMMDD+" 23:59:59")).getTime();
                  main_timerTv.setText("발표 중");
                  main_subTimerTv.setText("발표 종료까지 남은 시간");

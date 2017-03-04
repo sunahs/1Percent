@@ -7,12 +7,12 @@
     android:padding="20dp">
 
     <TextView
-        android:id="@+id/dialog_loginTv"
+        android:id="@+id/dialog_logoutTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:textSize="15sp"
-        android:text="로그인 하셔야 이용가능합니다.\n로그인하시겠습니까?" />
+        android:text="로그아웃 하시겠습니까?" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -21,7 +21,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/dialog_loginCancleBtn"
+            android:id="@+id/dialog_logoutCancleBtn"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginRight="5dp"
@@ -31,7 +31,7 @@
 
 
         <Button
-            android:id="@+id/dialog_loginOkBtn"
+            android:id="@+id/dialog_logoutOkBtn"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginLeft="5dp"

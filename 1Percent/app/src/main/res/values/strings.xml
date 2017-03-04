@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">1percent</string>
+    <string name="title_activity_version">VersionActivity</string>
 </resources>
