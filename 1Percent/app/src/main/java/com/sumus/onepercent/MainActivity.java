@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.sumus.onepercent.Object.MySharedPreference;
 import com.sumus.onepercent.PageAdapter.PagerAdapter;
 import com.sumus.onepercent.PageAdapter.SectionsPagerAdapter;
 
@@ -31,6 +32,7 @@ public class MainActivity extends FontBaseActvity {
     SimpleDateFormat df_circle = new SimpleDateFormat("yyyy.MM.dd");
     String nowStr;
     public static Context mContext;
+    public MySharedPreference pref;
     public int TAB_OFF_ICON[] = {R.mipmap.icon_home_off_btn, R.mipmap.icon_vote_off_btn, R.mipmap.icon_prize_off_btn, R.mipmap.icon_more_off_btn};
     public int TAB_ON_ICON[] = {R.mipmap.icon_home_on_btn, R.mipmap.icon_vote_on_btn, R.mipmap.icon_prize_on_btn, R.mipmap.icon_more_on_btn};
 
@@ -49,6 +51,7 @@ public class MainActivity extends FontBaseActvity {
     }
 
     public void InitWidget() {
+        pref = new MySharedPreference(mContext);
         long nowdate = System.currentTimeMillis(); // 현재시간
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         today_YYYYMMDD = df.format(nowdate);
@@ -110,6 +113,10 @@ public class MainActivity extends FontBaseActvity {
             }
         });
 
+        if (!pref.getPreferences("app", "first").equals("no")) {
+            pref.setPreferences("fcm", "push", "yes");
+            pref.setPreferences("fcm", "vibe", "yes");
+        }
     }
 
     void InitActionBar() {

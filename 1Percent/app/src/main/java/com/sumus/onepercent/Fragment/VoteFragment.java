@@ -41,6 +41,7 @@ import com.sumus.onepercent.SQLite.DBManager;
 import com.sumus.onepercent.SQLite.MainObject;
 import com.sumus.onepercent.SQLite.MyObject;
 import com.sumus.onepercent.SQLite.PrizeObject;
+import com.sumus.onepercent.SQLite.SettingObject;
 import com.sumus.onepercent.SQLite.VoteObject;
 
 import org.json.JSONArray;

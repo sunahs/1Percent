@@ -7,11 +7,13 @@ package com.sumus.onepercent.FCM;
 푸시메세지가 들어왔을때 실제 사용자에게 푸시알림을 만들어서 띄워주는 클래스 입니다.
 Api를 통해 푸시 알림을 전송하면 입력한 내용이 message에 담겨서 오게 됩니다.
 */
+ import android.Manifest;
  import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+ import android.content.pm.PackageManager;
+ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -19,22 +21,28 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.support.v4.app.NotificationCompat;
+ import android.os.Vibrator;
+ import android.support.v4.app.ActivityCompat;
+ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
  import com.sumus.onepercent.MainActivity;
+ import com.sumus.onepercent.MoreActivity.PushActivity;
+ import com.sumus.onepercent.Object.MySharedPreference;
  import com.sumus.onepercent.R;
+ import com.sumus.onepercent.SQLite.SettingObject;
 
  import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Map;
-
+ import java.util.Set;
 
 
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
     private static final String TAG = "FirebaseMsgService";
+    private boolean m_isVibrator = true;
 
     // [START receive_message]
     @Override
@@ -45,33 +53,34 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         String message = null;
         try {
             message = URLDecoder.decode(msg, "euc-kr");
+            Log.d("SUN","title : " + title + " / msg : "+ message);
         } catch (Exception ex) {
             ex.printStackTrace();
+            Log.d("SUN","push " + ex.getMessage().toString());
         }
 
-        Log.d("SUN","title : " + title + " / msg : "+ message);
-        sendPushNotification(message); // remoteMessage.getData().get("message")
-        String from = remoteMessage.getFrom();
+        String push = ((MainActivity)MainActivity.mContext).pref.getPreferences("fcm","push");
+        String pushvibe = ((MainActivity)MainActivity.mContext).pref.getPreferences("fcm","vibe");
+        Log.d("SUN","service *** push : "+ push + " pushvibe : "+ pushvibe);
 
+        if( push.equals("yes")) {
+                sendPushNotification(message);
+                PowerManager pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+                PowerManager.WakeLock wakelock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
+                wakelock.acquire(5000);
 
-//        Intent intent_ = new Intent(((SplashActivity)SplashActivity.mContext), PopupActivity.class);
-//        intent_.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);   // 이거 안해주면 안됨
-//        ((SplashActivity)SplashActivity.mContext).startActivity(intent_);
-
+            if(!pushvibe.equals("yes")){
+                Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                long[] pattern = {1, 1};
+                vibe.vibrate(pattern, -1);
+            }
+        }
     }
 
     private void sendPushNotification(String message) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
-
-
-
-//        NotificationCompat.BigPictureStyle style = new NotificationCompat.BigPictureStyle()
-//                // .bigPicture(myBitmap)
-//                .setBigContentTitle("1PERCENT")
-//                .setSummaryText(message);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,  PendingIntent.FLAG_ONE_SHOT);
 
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -80,25 +89,11 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 .setContentTitle("1PERCENT")
                 .setContentText(message)
                 .setAutoCancel(true)
-                .setStyle(new NotificationCompat.BigPictureStyle().setSummaryText(message))
                 .setSound(defaultSoundUri).setLights(000000255, 500, 2000)
                 .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        PowerManager pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
-        wakelock.acquire(5000);
-
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
-
-
-
-    }
-
-    Bitmap DrawableToBitmap(){
-        BitmapDrawable drawable = (BitmapDrawable) getResources().getDrawable(R.mipmap.app_icon);
-        return drawable.getBitmap();
 
     }
 

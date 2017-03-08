@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.sumus.onepercent.FontBaseActvity;
 import com.sumus.onepercent.JoinActivity;
 import com.sumus.onepercent.MainActivity;
@@ -25,7 +27,7 @@ public class AdminActivity extends FontBaseActvity implements View.OnClickListen
 
     MySharedPreference pref;
 
-    RelativeLayout admin_logout;
+    RelativeLayout admin_logout, more_admin;
     ImageButton admin_logoutBtn;
     TextView admin_logState;
 
@@ -40,12 +42,16 @@ public class AdminActivity extends FontBaseActvity implements View.OnClickListen
         manager = new DBManager(mContext);
 
         initWidget();
+
+
     }
 
     public void initWidget() {
         admin_idTv = (TextView) findViewById(R.id.admin_idTv);
         admin_logout = (RelativeLayout) findViewById(R.id.admin_logout);
+        more_admin = (RelativeLayout) findViewById(R.id.more_admin);
         admin_logoutBtn = (ImageButton) findViewById(R.id.admin_logoutBtn);
+        more_admin.setOnClickListener(this);
         admin_logout.setOnClickListener(this);
         admin_logoutBtn.setOnClickListener(this);
         admin_logState = (TextView)findViewById(R.id.admin_logState);
@@ -113,6 +119,10 @@ public class AdminActivity extends FontBaseActvity implements View.OnClickListen
                         ad.cancel();
                     }
                 });
+                break;
+            case R.id.more_admin:
+                String deviceToken = FirebaseInstanceId.getInstance().getToken();
+                Log.d("SUN","deviceToken : "+deviceToken);
                 break;
         }
     }

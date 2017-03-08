@@ -50,7 +50,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:paddingLeft="20dp"
-                android:text="투표 시작 알림"
+                android:text="투표 및 당첨자 알림"
                 android:textColor="@color/colorText"
                 android:textSize="13sp" />
         </RelativeLayout>
@@ -70,9 +70,11 @@
                 android:textSize="13sp" />
 
             <Switch
+                android:id="@+id/set_push"
                 android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:paddingRight="20dp"
+                android:thumbTint="@color/colorBlue"
                 android:layout_height="match_parent" />
         </RelativeLayout>
         <RelativeLayout
@@ -80,6 +82,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/topbottom_line">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -90,140 +93,13 @@
                 android:textSize="13sp" />
 
             <Switch
+                android:id="@+id/set_vibe"
                 android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:paddingRight="20dp"
+                android:thumbTint="@color/colorBlue"
                 android:layout_height="match_parent" />
         </RelativeLayout>
     </LinearLayout>
 
-    <!-- 투표 종료 1시간전 알림 -->
-    <LinearLayout
-        android:layout_marginBottom="25dp"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@drawable/topbottom_line">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingLeft="20dp"
-                android:text="투표 종료 1시간전 알림"
-                android:textColor="@color/colorText"
-                android:textSize="13sp" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/topbottom_line">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingLeft="20dp"
-                android:text="PUSH 알림"
-                android:textColor="@color/colorText"
-                android:textSize="13sp" />
-
-            <Switch
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:paddingRight="20dp"
-                android:layout_height="match_parent" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/topbottom_line">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingLeft="20dp"
-                android:text="무음"
-                android:textColor="@color/colorText"
-                android:textSize="13sp" />
-
-            <Switch
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:paddingRight="20dp"
-                android:layout_height="match_parent" />
-        </RelativeLayout>
-    </LinearLayout>
-
-    <!-- 당첨자 발표 알림 -->
-    <LinearLayout
-        android:layout_marginBottom="25dp"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@drawable/topbottom_line">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingLeft="20dp"
-                android:text="당첨자 발표 알림"
-                android:textColor="@color/colorText"
-                android:textSize="13sp" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/topbottom_line">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingLeft="20dp"
-                android:text="PUSH 알림"
-                android:textColor="@color/colorText"
-                android:textSize="13sp" />
-
-            <Switch
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:paddingRight="20dp"
-                android:layout_height="match_parent" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/topbottom_line">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingLeft="20dp"
-                android:text="무음"
-                android:textColor="@color/colorText"
-                android:textSize="13sp" />
-
-            <Switch
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:paddingRight="20dp"
-                android:layout_height="match_parent" />
-        </RelativeLayout>
-    </LinearLayout>
 </LinearLayout>

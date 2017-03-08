@@ -13,7 +13,7 @@ public class MySharedPreference {
      /*
         app : 앱                                           first(앱처음실행), visted(마지막 방문시간)
         user : 회원 로그인 관련 데이터                     userID, userPwd
-        fcm : fcm push 위한 데이터                         device, push
+        fcm : fcm push 위한 데이터                         device, push, vibe
      */
 
     static Context mContext;

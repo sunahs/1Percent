@@ -12,6 +12,8 @@ import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -33,6 +36,7 @@ import com.sumus.onepercent.SQLite.DBManager;
 import com.sumus.onepercent.SQLite.MainObject;
 import com.sumus.onepercent.SQLite.PrizeObject;
 import com.sumus.onepercent.SQLite.VoteObject;
+import com.sumus.onepercent.SmsActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -170,7 +174,10 @@ public class MainFragment extends Fragment implements View.OnClickListener{
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.main_infoBtn:
-                Intent intent = new Intent(mActivity, JoinActivity.class);
+//                String phoneNum = getMyPhoneNumber();
+//                Toast.makeText(mActivity, "phone : " + phoneNum, Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(mActivity, SmsActivity.class);
                 startActivity(intent);
 //                ((MainActivity)MainActivity.mContext).reActivity();
                 break;
@@ -361,5 +368,23 @@ public class MainFragment extends Fragment implements View.OnClickListener{
     public Bitmap byteArrayToBitmap(byte[] byteArray ) {  // byte -> bitmap 변환 및 반환
         Bitmap bitmap = BitmapFactory.decodeByteArray( byteArray, 0, byteArray.length ) ;
         return bitmap ;
+    }
+
+
+    public String getMyPhoneNumber() {
+        try
+        {
+            TelephonyManager systemService = (TelephonyManager)mActivity.getSystemService(mActivity.TELEPHONY_SERVICE);
+            String PhoneNumber = systemService.getLine1Number();
+            if( PhoneNumber != null  ) {
+                PhoneNumber = PhoneNumber.substring(PhoneNumber.length()-10,PhoneNumber.length());
+                PhoneNumber="0"+PhoneNumber;
+                PhoneNumber = PhoneNumberUtils.formatNumber(PhoneNumber);
+                return PhoneNumber;
+            }
+            return PhoneNumber;
+        }
+        catch( Exception e) { }
+        return null;
     }
 }

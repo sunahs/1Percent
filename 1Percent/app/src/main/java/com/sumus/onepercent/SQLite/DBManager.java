@@ -23,6 +23,7 @@ public class DBManager {
     private static final String voteTable = "VoteTable";
     private static final String prizeTable = "PrizeTable";
     private static final String myTable = "MyTable";
+    private static final String settingTable = "SettingTable";
     public static final int dbVersion = 1;
 
     // DB관련 객체 선언
@@ -57,10 +58,13 @@ public class DBManager {
                     "vote_total text, vote_prize_total text, request_state text, todayresult_state text, primary key(vote_date));";
             String createSql2 = "create table " + prizeTable + " (prize_date text not null,prize_people text, prize_gift text, prize_img text , primary key(prize_date));";
             String createSql3 = "create table " + myTable + " (my_date text not null, my_select_number text, my_select_value text, primary key(my_date));";
+            String createSql4 = "create table " + settingTable + " (set_id INTEGER PRIMARY KEY AUTOINCREMENT, set_push integer not null default 1, set_vibe integer not null default 1);";
+            //String createSql4 = "create table " + settingTable + " (set_id INTEGER, set_push integer not null default 1, set_vibe integer not null default 1, primary key(set_id));";
 
             arg0.execSQL(createSql1);
             arg0.execSQL(createSql2);
             arg0.execSQL(createSql3);
+            arg0.execSQL(createSql4);
 
         }
 
@@ -243,12 +247,63 @@ public class DBManager {
 
     }
 
-    public void deleteMy()  // 삽입
+    public void deleteMy()  // 삭제
     {
         String sql = "delete from " + myTable + ";";
         try {
             db.execSQL(sql);
             Log.d("SUN", "deleteMy : clear data " );
+        } catch (Exception e) {
+        }
+    }
+
+    /*********************** setting Table *************************/
+    public void insertSetting(SettingObject info)  // 삽입
+    {
+        ContentValues values = new ContentValues();
+        values.put("set_push", info.getSet_push());
+        values.put("set_vibe", info.getSet_vibe());
+
+        try {
+            db.insert(settingTable, null, values);
+            Log.d("SUN", "insertSetting : " + values.toString());
+        } catch (Exception e) {
+        }
+    }
+
+    public SettingObject selectSetting() // 조회
+    {
+        String sql = "select * from " + settingTable + " where set_id=1;";
+        Cursor results = db.rawQuery(sql, null);
+
+        results.moveToFirst();
+        SettingObject info = null;
+        while (!results.isAfterLast()) {
+            info = new SettingObject(results.getInt(1), results.getInt(2));
+            Log.d("SUN", "selectSetting : " + info.toString());
+            results.moveToNext();
+        }
+        results.close();
+        return info;
+    }
+
+    public void updateSettingPush(int set_push)  // 업데이트
+    {
+        ContentValues values = new ContentValues();
+        values.put("set_push", set_push);
+        try {
+            db.update(settingTable, values, "set_id=?", new String[]{String.valueOf("1")});
+            Log.d("SUN", "updateSetting : " + values.toString());
+        } catch (Exception e) {
+        }
+    }
+    public void updateSettingVibe(int set_vibe)  // 업데이트
+    {
+        ContentValues values = new ContentValues();
+        values.put("set_vibe", set_vibe);
+        try {
+            db.update(settingTable, values, "set_id=?", new String[]{String.valueOf("1")});
+            Log.d("SUN", "updateSetting : " + values.toString());
         } catch (Exception e) {
         }
     }
