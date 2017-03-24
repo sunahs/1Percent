@@ -39,18 +39,12 @@ public class PushActivity extends FontBaseActvity{
 
         set_push.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Toast.makeText(mContext, "set_vote_start : "+ isChecked, Toast.LENGTH_SHORT).show();
-                manager.updateSettingPush(isChecked == true ? 1 : 0);
                 pref.setPreferences("fcm", "push", isChecked == true ? "yes" : "no");
-                Log.d("SUN","push : "+ pref.getPreferences("fcm","push"));
             }
         });
         set_vibe.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Toast.makeText(mContext, "set_vote_startQuite : "+ isChecked, Toast.LENGTH_SHORT).show();
-                manager.updateSettingVibe(isChecked == true ? 1 : 0);
                 pref.setPreferences("fcm", "vibe", isChecked == true ? "no" : "yes");
-                Log.d("SUN","pushvibe : "+ pref.getPreferences("fcm","vibe"));
             }
         });
 

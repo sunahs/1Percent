@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.readystatesoftware.viewbadger.BadgeView;
 import com.sumus.onepercent.Object.MySharedPreference;
 import com.sumus.onepercent.PageAdapter.PagerAdapter;
 import com.sumus.onepercent.PageAdapter.SectionsPagerAdapter;
@@ -89,20 +90,15 @@ public class MainActivity extends FontBaseActvity {
                 switch (position) {
                     case 0: // 홈
                         action_titleTv.setText("Home");
-
-
                         break;
                     case 1: // 질문
                         action_titleTv.setText("Vote");
-
                         break;
                     case 2: // 당첨자
                         action_titleTv.setText("Prize");
-
                         break;
                     case 3: // 더보기
                         action_titleTv.setText("More");
-
                         break;
 
                 }
@@ -112,6 +108,8 @@ public class MainActivity extends FontBaseActvity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+
+
 
         if (!pref.getPreferences("app", "first").equals("no")) {
             pref.setPreferences("fcm", "push", "yes");

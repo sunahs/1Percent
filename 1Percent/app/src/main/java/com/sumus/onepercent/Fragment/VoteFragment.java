@@ -249,10 +249,14 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
         }
 
         if (!pref.getPreferences("app", "first").equals("no")) {
-            getAllVoteResult_Server();
-            getWinnerResult_Server();
             pref.setPreferences("app", "first", "no");
             FCMSetting();
+        }
+
+        VoteObject vo = null;
+        if ((vo = manager.selectVote("20170227")) == null) {
+            getAllVoteResult_Server();
+            getWinnerResult_Server();
         }
     }
 
@@ -364,7 +368,12 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
                     final CalendarView calendarView = (CalendarView) layout.findViewById(R.id.calendarView);
 
                     calendarView.setMaxDate(System.currentTimeMillis());
-
+                    calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+                        @Override
+                        public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+//                            setDate(year, month+1, dayOfMonth);
+                        }
+                    });
                     calender_okBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -475,22 +484,32 @@ public class VoteFragment extends Fragment implements RadioGroup.OnCheckedChange
         VoteObject voteObject;
         if ((voteObject = manager.selectVote(select_date)) != null) {
             float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, mActivity.getResources().getDisplayMetrics());
-
+            int maxIndex = 0;
+            int maxCount = 0;
             vote_questionTv.setText(voteObject.getVote_question());
             vote_prize_totalTv.setText(voteObject.getVote_prize_total());
             vote_totalTv.setText(voteObject.getVote_total());
 
             for (int i = 0; i < 4; i++) {
+                int vote_count = Integer.parseInt(voteObject.getVote_count(i + 1));
                 vote_valueTv[i].setText(voteObject.getVote_ex(i + 1));
-                vote_countTv[i].setText(voteObject.getVote_count(i + 1));
+//                vote_countTv[i].setText(voteObject.getVote_count(i + 1));
+                vote_countTv[i].setText(vote_count+"");
+
+                if(maxCount < vote_count){
+                    maxCount = vote_count;
+                    maxIndex = i;
+                }
             }
 
+            Log.d("SUN"," maxindex : "+ maxIndex);
             int total_count = Integer.parseInt(voteObject.getVote_total());
             for (int i = 0; i < 4; i++) {
                 int count = Integer.parseInt(voteObject.getVote_count(i + 1));
                 float percent = (count / (float) total_count) * 100;
                 vote_on_btn[i].setLayoutParams(new TableRow.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, (int) px, 100 - percent));
                 vote_off_btn[i].setLayoutParams(new TableRow.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, (int) px, percent));
+
             }
         }
         if ((myObject = manager.selectMy(select_date)) != null) {

@@ -27,6 +27,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.Base64;
 import com.loopj.android.http.RequestParams;
+import com.readystatesoftware.viewbadger.BadgeView;
 import com.sumus.onepercent.FontBaseActvity;
 import com.sumus.onepercent.JoinActivity;
 import com.sumus.onepercent.MainActivity;
@@ -145,6 +146,12 @@ public class MainFragment extends Fragment implements View.OnClickListener{
         main_infoBtn.setOnClickListener(this);
 
         main_giftImg = (ImageView)views.findViewById(R.id.main_giftImg);
+
+//        BadgeView badge = new BadgeView(mActivity, main_infoBtn);
+//        badge.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+//        badge.setText("1");
+//        badge.show();
+
         InitData();
     }
 
@@ -174,11 +181,11 @@ public class MainFragment extends Fragment implements View.OnClickListener{
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.main_infoBtn:
-//                String phoneNum = getMyPhoneNumber();
-//                Toast.makeText(mActivity, "phone : " + phoneNum, Toast.LENGTH_SHORT).show();
+                String phoneNum = getMyPhoneNumber();
+                Toast.makeText(mActivity, "phone : " + phoneNum, Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(mActivity, SmsActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(mActivity, SmsActivity.class);
+//                startActivity(intent);
 //                ((MainActivity)MainActivity.mContext).reActivity();
                 break;
         }

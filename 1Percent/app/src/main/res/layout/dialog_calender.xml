@@ -23,6 +23,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/appbar"
+        android:backgroundTint="@color/colorBlue"
         android:focusedMonthDateColor="@color/colorBlue"
         android:maxDate="12/31/2017"
         android:minDate="01/01/2017"
