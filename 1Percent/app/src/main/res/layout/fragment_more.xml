@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
     android:background="@color/colorBackground"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
 
     <RelativeLayout
@@ -13,73 +13,36 @@
         android:background="@drawable/topbottom_line">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:paddingLeft="20dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp">
 
             <ImageView
-                android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_person"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_person" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="계정관리"
+                android:text="ID"
                 android:textColor="@color/colorText"
                 android:textSize="13sp" />
         </LinearLayout>
 
 
-        <ImageButton
-            android:id="@+id/more_adminBtn"
+        <TextView
+            android:id="@+id/more_adminTv"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:background="@color/colorTran"
-            android:paddingRight="20dp"
-            android:src="@mipmap/icon_date_right" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/more_notice"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/bottom_line">
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:paddingLeft="20dp"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_notice"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="공지사항"
-                android:textColor="@color/colorText"
-                android:textSize="13sp" />
-        </LinearLayout>
-
-
-        <ImageButton
-            android:id="@+id/more_noticeBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:background="@color/colorTran"
-            android:paddingRight="20dp"
-            android:src="@mipmap/icon_date_right" />
+            android:gravity="center"
+            android:paddingRight="25dp"
+            android:text="-" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -89,16 +52,16 @@
         android:background="@drawable/bottom_line">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:paddingLeft="20dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp">
 
             <ImageView
-                android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_center"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_center" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -126,16 +89,16 @@
         android:background="@drawable/bottom_line">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:paddingLeft="20dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp">
 
             <ImageView
-                android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_push"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/icon_push" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -148,43 +111,6 @@
 
         <ImageButton
             android:id="@+id/more_pushBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:background="@color/colorTran"
-            android:paddingRight="20dp"
-            android:src="@mipmap/icon_date_right" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/more_version"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/bottom_line">
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:paddingLeft="20dp"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_version"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="버전정보"
-                android:textColor="@color/colorText"
-                android:textSize="13sp" />
-        </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/more_versionBtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"

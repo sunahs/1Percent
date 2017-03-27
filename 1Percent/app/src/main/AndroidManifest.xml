@@ -42,11 +42,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".MoreActivity.AdminActivity" />
         <activity android:name=".MoreActivity.CustomerCenterActivity" />
-        <activity android:name=".MoreActivity.NoticeActivity" />
         <activity android:name=".MoreActivity.PushActivity" />
-        <activity android:name=".MoreActivity.VersionActivity" />
         <activity android:name=".SmsActivity"></activity>
     </application>
 
